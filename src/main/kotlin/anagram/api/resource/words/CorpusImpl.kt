@@ -26,6 +26,15 @@ class CorpusImpl(val language: Language) : Corpus {
                 }
     }
 
+    override fun findAnagrams(word: String): Collection<String> {
+        val anagrams = wordStore.getOrElse(word.lexicalSort()) { mutableSetOf() }
+        return when {
+            anagrams.contains(word) -> anagrams.minus(word)
+            else -> emptySet()
+        }
+
+    }
+
     /**
      * Determine if the word is valid
      * @return true if valid, else false

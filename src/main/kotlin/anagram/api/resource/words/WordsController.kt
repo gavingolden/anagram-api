@@ -1,22 +1,25 @@
 package anagram.api.resource.words
 
 import org.springframework.http.HttpStatus
-import org.springframework.http.MediaType
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.ResponseStatus
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 class WordsController(val wordsService: Corpus) {
 
-    data class AddWordsRequest(val words: List<String>)
+    data class AddWordsRequest(val words: Collection<String>)
 
-    @PostMapping("/words.json",
-            consumes = [MediaType.APPLICATION_JSON_UTF8_VALUE],
-            produces = [MediaType.APPLICATION_JSON_UTF8_VALUE])
+    @PostMapping("/words.json")
     @ResponseStatus(HttpStatus.CREATED)
     fun add(@RequestBody body: AddWordsRequest) {
         wordsService.addWords(body.words)
+    }
+
+
+    data class AnagramsResponse(val anagrams: Collection<String>)
+
+    @GetMapping("/anagrams/{word}.json")
+    @ResponseStatus(HttpStatus.OK)
+    fun anagrams(@PathVariable("word") word: String): AnagramsResponse {
+        return AnagramsResponse(wordsService.findAnagrams(word))
     }
 }
