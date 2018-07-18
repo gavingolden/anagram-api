@@ -79,7 +79,7 @@ class CorpusImpl(val language: Language) : Corpus {
      */
     private fun findOrCreateBucket(word: String): MutableCollection<String> {
         val key = buildKey(word)
-        return wordStore.getOrPut(key) { mutableSetOf() }
+        return wordStore.getOrPut(key, ::buildNewBucket)
     }
 
     /**
@@ -89,7 +89,7 @@ class CorpusImpl(val language: Language) : Corpus {
      */
     private fun findBucket(word: String): MutableCollection<String> {
         val key = buildKey(word)
-        return wordStore.getOrElse(key) { mutableSetOf() }
+        return wordStore.getOrElse(key, ::buildNewBucket)
     }
 
     /**
@@ -99,5 +99,14 @@ class CorpusImpl(val language: Language) : Corpus {
     private fun buildKey(word: String): String {
         return word.lexicalSort()
                 .also { logger.debug("Built bucket key [{}] for [{}]", it, word) }
+    }
+
+    /**
+     * Bucket implementation. This will affect the performance and
+     * behavior of various methods due to ordering, insertion/removal
+     * speed, etc
+     */
+    private fun buildNewBucket(): MutableCollection<String> {
+        return sortedSetOf()
     }
 }
