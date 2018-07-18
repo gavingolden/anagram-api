@@ -73,19 +73,18 @@ class CorpusImpl(val language: Language) : Corpus {
     }
 
     /**
-     * Find the bucket of anagrams for the given word
+     * Find the anagram bucket for the given word
      * if it exists, else create it
      * @return the existing or new bucket
      */
     private fun findOrCreateBucket(word: String): MutableCollection<String> {
-        val key = buildKey(word)
-        return wordStore.getOrPut(key, ::buildNewBucket)
+        return buildKey(word)
+                .let { wordStore.getOrPut(it, ::buildNewBucket) }
     }
 
     /**
-     * Find the bucket of anagrams for the given word.
-     * This does not create the bucket if it does not
-     * already exist
+     * Find the anagram bucket for the given word
+     * @return the bucket in which the word resides if one exists, else null
      */
     private fun findBucket(word: String): MutableCollection<String>? {
         return buildKey(word)
