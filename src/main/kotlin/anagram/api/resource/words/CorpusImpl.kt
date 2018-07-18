@@ -33,7 +33,7 @@ class CorpusImpl(val language: Language) : Corpus {
 
     override fun deleteWord(word: String) {
         logger.debug("Deleting word [{}] from corpus", word)
-        findBucket(word).remove(word)
+        findBucket(word)?.remove(word)
     }
 
     override fun clearCorpus() {
@@ -87,9 +87,10 @@ class CorpusImpl(val language: Language) : Corpus {
      * This does not create the bucket if it does not
      * already exist
      */
-    private fun findBucket(word: String): MutableCollection<String> {
-        val key = buildKey(word)
-        return wordStore.getOrElse(key, ::buildNewBucket)
+    private fun findBucket(word: String): MutableCollection<String>? {
+        return buildKey(word)
+                .let(wordStore::get)
+                .takeIf { it != null && it.contains(word) }
     }
 
     /**
