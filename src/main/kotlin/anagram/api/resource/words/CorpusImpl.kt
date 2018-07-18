@@ -2,10 +2,16 @@ package anagram.api.resource.words
 
 import anagram.api.extensions.lexicalSort
 import anagram.api.resource.language.Language
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
 @Service
 class CorpusImpl(val language: Language) : Corpus {
+
+    companion object {
+        val logger: Logger = LoggerFactory.getLogger(CorpusImpl::class.java)
+    }
 
     /**
      * Stores the current state of the words service. The lexically
@@ -15,29 +21,31 @@ class CorpusImpl(val language: Language) : Corpus {
     val wordStore = hashMapOf<String, MutableCollection<String>>()
 
     override fun addWords(words: Collection<String>) {
-
-        words.filterNot(::valid)
-                .let {
-                    if (it.isEmpty()) {
-                        words.forEach(this::addWordToStore)
-                    } else {
-                        throw IllegalArgumentException("""The words [${it.joinToString()}] are invalid""")
-                    }
-                }
+        words.filterNot(::valid).let {
+            if (it.isEmpty()) {
+                logger.info("""Adding ${words.size} words to the corpus""")
+                words.forEach(this::addWordToStore)
+            } else {
+                throw IllegalArgumentException("""The words [${it.joinToString()}] are invalid""")
+            }
+        }
     }
 
     override fun deleteWord(word: String) {
+        logger.debug("Deleting word [{}] from corpus", word)
         findBucket(word).remove(word)
+    }
 
     }
 
     override fun findAnagrams(word: String): Collection<String> {
-        val anagrams = findOrCreateBucket(word)
-        return when {
-            anagrams.contains(word) -> anagrams.minus(word)
+        val allAnagrams = findOrCreateBucket(word)
+        val anagramSubset: Collection<String> = when {
+            allAnagrams.contains(word) -> allAnagrams.minus(word)
             else -> emptySet()
         }
-
+        logger.info("""Found ${anagramSubset.size} anagrams for [$word]""")
+        return anagramSubset
     }
 
     /**
@@ -45,7 +53,11 @@ class CorpusImpl(val language: Language) : Corpus {
      * @return true if valid, else false
      */
     private fun valid(word: String): Boolean {
-        return word.isNotBlank() && language.words().contains(word)
+        val isValid = word.isNotBlank() && language.words().contains(word)
+        if (!isValid) {
+            logger.debug("[{}] is not a valid word", word)
+        }
+        return isValid
     }
 
     /**
@@ -53,6 +65,7 @@ class CorpusImpl(val language: Language) : Corpus {
      * @param word to add
      */
     private fun addWordToStore(word: String) {
+        logger.debug("Adding [{}] to corpus", word)
         findOrCreateBucket(word).add(word)
     }
 
@@ -82,5 +95,6 @@ class CorpusImpl(val language: Language) : Corpus {
      */
     private fun buildKey(word: String): String {
         return word.lexicalSort()
+                .also { logger.debug("Built bucket key [{}] for [{}]", it, word) }
     }
 }
