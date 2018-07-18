@@ -36,4 +36,12 @@ class WordsController(val wordsService: Corpus) {
             : AnagramsResponse {
         return AnagramsResponse(wordsService.findAnagrams(word, limit))
     }
+
+    data class ComparisonResponse(val match: Boolean)
+
+    @PostMapping("/anagrams/comparison.json")
+    @ResponseStatus(HttpStatus.OK)
+    fun comparison(@RequestBody body: WordsRequest): ComparisonResponse {
+        return ComparisonResponse(wordsService.compare(body.words))
+    }
 }

@@ -30,4 +30,10 @@ interface Corpus {
      * @return anagrams, excluding the input word
      */
     fun findAnagrams(word: String, limit: Int?): Collection<String>
+
+    /**
+     * Determine if words are anagrams of one another
+     * @return true if all are anagrams, else false
+     */
+    fun compare(words: Collection<String>): Boolean
 }

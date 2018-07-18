@@ -5,6 +5,7 @@ import anagram.api.resource.language.Language
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import string.lazyStr
 
 @Service
 class CorpusImpl(val language: Language) : Corpus {
@@ -54,6 +55,17 @@ class CorpusImpl(val language: Language) : Corpus {
         } else allAnagrams
     }
 
+    override fun compare(words: Collection<String>): Boolean {
+        return words.first()
+                .let(::findBucket)
+                ?.containsAll(words) ?: false
+                .also { isMatch ->
+                    logger.debug("The words [{}] are{} mutual anagrams",
+                            lazyStr { words.joinToString() },
+                            if (isMatch) "" else " not")
+                }
+    }
+
     /**
      * Determine if the word is valid
      * @return true if valid, else false
@@ -93,6 +105,10 @@ class CorpusImpl(val language: Language) : Corpus {
         return buildKey(word)
                 .let(wordStore::get)
                 .takeIf { it != null && it.contains(word) }
+                .also { bucket ->
+                    if (bucket == null) logger.debug("Did not find bucket for [{}]", word)
+                    else logger.debug("Found bucket of size {} for [{}]", bucket.size, word)
+                }
     }
 
     /**
