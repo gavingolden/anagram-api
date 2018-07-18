@@ -10,8 +10,14 @@ class WordsController(val wordsService: Corpus) {
 
     @PostMapping("/words.json")
     @ResponseStatus(HttpStatus.CREATED)
-    fun add(@RequestBody body: AddWordsRequest) {
+    fun addWord(@RequestBody body: AddWordsRequest) {
         wordsService.addWords(body.words)
+    }
+
+    @DeleteMapping("/words/{word}.json")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun deleteWord(@PathVariable("word") word: String) {
+        wordsService.deleteWord(word)
     }
 
 

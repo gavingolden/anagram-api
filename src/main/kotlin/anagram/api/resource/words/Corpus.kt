@@ -12,6 +12,12 @@ interface Corpus {
     fun addWords(words: Collection<String>)
 
     /**
+     * Delete a word from the corpus
+     * @param word to be deleted
+     */
+    fun deleteWord(word: String)
+
+    /**
      * Get anagrams of the given word that are currently
      * in the corpus
      * @param word with which to search

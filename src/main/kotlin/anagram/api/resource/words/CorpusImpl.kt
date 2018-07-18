@@ -26,8 +26,13 @@ class CorpusImpl(val language: Language) : Corpus {
                 }
     }
 
+    override fun deleteWord(word: String) {
+        findBucket(word).remove(word)
+
+    }
+
     override fun findAnagrams(word: String): Collection<String> {
-        val anagrams = wordStore.getOrElse(word.lexicalSort()) { mutableSetOf() }
+        val anagrams = findOrCreateBucket(word)
         return when {
             anagrams.contains(word) -> anagrams.minus(word)
             else -> emptySet()
@@ -48,10 +53,34 @@ class CorpusImpl(val language: Language) : Corpus {
      * @param word to add
      */
     private fun addWordToStore(word: String) {
-        word.lexicalSort().let {
-            wordStore.getOrPut(it) { mutableSetOf() }
-                    .add(word)
+        findOrCreateBucket(word).add(word)
+    }
 
-        }
+    /**
+     * Find the bucket of anagrams for the given word
+     * if it exists, else create it
+     * @return the existing or new bucket
+     */
+    private fun findOrCreateBucket(word: String): MutableCollection<String> {
+        val key = buildKey(word)
+        return wordStore.getOrPut(key) { mutableSetOf() }
+    }
+
+    /**
+     * Find the bucket of anagrams for the given word.
+     * This does not create the bucket if it does not
+     * already exist
+     */
+    private fun findBucket(word: String): MutableCollection<String> {
+        val key = buildKey(word)
+        return wordStore.getOrElse(key) { mutableSetOf() }
+    }
+
+    /**
+     * Build the key for the anagram bucket in which
+     * the word is stored
+     */
+    private fun buildKey(word: String): String {
+        return word.lexicalSort()
     }
 }
