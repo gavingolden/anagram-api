@@ -41,14 +41,17 @@ class CorpusImpl(val language: Language) : Corpus {
         wordStore.clear()
     }
 
-    override fun findAnagrams(word: String): Collection<String> {
-        val allAnagrams = findOrCreateBucket(word)
-        val anagramSubset: Collection<String> = when {
-            allAnagrams.contains(word) -> allAnagrams.minus(word)
-            else -> emptySet()
-        }
-        logger.info("""Found ${anagramSubset.size} anagrams for [$word]""")
-        return anagramSubset
+    override fun findAnagrams(word: String, limit: Int?): Collection<String> {
+        if (limit != null && limit < 0) throw IllegalArgumentException("limit must be positive")
+
+        val allAnagrams = findBucket(word).orEmpty()
+                .minus(word)
+        logger.info("""Found ${allAnagrams.size} anagrams for [$word]""")
+
+        return if (limit != null) {
+            logger.info("""Returning $limit of ${allAnagrams.size} anagrams for [$word]""")
+            allAnagrams.take(limit)
+        } else allAnagrams
     }
 
     /**

@@ -26,7 +26,8 @@ interface Corpus {
      * Get anagrams of the given word that are currently
      * in the corpus
      * @param word with which to search
+     * @param limit max number of results
      * @return anagrams, excluding the input word
      */
-    fun findAnagrams(word: String): Collection<String>
+    fun findAnagrams(word: String, limit: Int?): Collection<String>
 }

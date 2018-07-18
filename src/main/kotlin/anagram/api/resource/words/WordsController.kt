@@ -31,7 +31,9 @@ class WordsController(val wordsService: Corpus) {
 
     @GetMapping("/anagrams/{word}.json")
     @ResponseStatus(HttpStatus.OK)
-    fun anagrams(@PathVariable("word") word: String): AnagramsResponse {
-        return AnagramsResponse(wordsService.findAnagrams(word))
+    fun anagrams(@PathVariable("word") word: String,
+                 @RequestParam("limit") limit: Int?)
+            : AnagramsResponse {
+        return AnagramsResponse(wordsService.findAnagrams(word, limit))
     }
 }
