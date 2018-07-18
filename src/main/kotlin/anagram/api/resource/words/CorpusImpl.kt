@@ -36,6 +36,9 @@ class CorpusImpl(val language: Language) : Corpus {
         findBucket(word).remove(word)
     }
 
+    override fun clearCorpus() {
+        logger.info("Clearing all words from the corpus")
+        wordStore.clear()
     }
 
     override fun findAnagrams(word: String): Collection<String> {

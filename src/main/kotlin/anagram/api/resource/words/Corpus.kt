@@ -18,6 +18,11 @@ interface Corpus {
     fun deleteWord(word: String)
 
     /**
+     * Delete all words from the corpus
+     */
+    fun clearCorpus()
+
+    /**
      * Get anagrams of the given word that are currently
      * in the corpus
      * @param word with which to search

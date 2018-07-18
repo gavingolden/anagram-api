@@ -6,12 +6,18 @@ import org.springframework.web.bind.annotation.*
 @RestController
 class WordsController(val wordsService: Corpus) {
 
-    data class AddWordsRequest(val words: Collection<String>)
+    data class WordsRequest(val words: Collection<String>)
 
     @PostMapping("/words.json")
     @ResponseStatus(HttpStatus.CREATED)
-    fun addWord(@RequestBody body: AddWordsRequest) {
+    fun addWord(@RequestBody body: WordsRequest) {
         wordsService.addWords(body.words)
+    }
+
+    @DeleteMapping("/words.json")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun deleteWords() {
+        wordsService.clearCorpus()
     }
 
     @DeleteMapping("/words/{word}.json")
