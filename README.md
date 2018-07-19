@@ -65,7 +65,7 @@ would be sorted by `bucket.size` so that the buckets can be easily iterated in o
   - Space: `b` for the cloned bucket
 * Adding words to the corpus
   - Time: `log(s) + log(b)` for building the key and adding the word to a `SortedSet` bucket
-  - Space: `n` - each word is stored just once
+  - Space: `n` because each word is stored just once
 * Removing words from the corpus
   - Time: `log(s) + log(b)` for building the key and removing the word from the `SortedSet` bucket
 * Clearing the corpus
