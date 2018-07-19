@@ -6,8 +6,8 @@ added to the corpus before they are to be considered by the anagram
 service. Only valid English words can be added.
 
 ### Prerequisites
-* App: _none_
-* Tests: `ruby` must be installed
+* App: JDK
+* Tests: `ruby`
 
 ### Getting Started
 ##### Running the app
