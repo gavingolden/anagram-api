@@ -80,5 +80,5 @@ wanted to give it a try
 * Maven
 * Ruby (test)
 
-##### Final Notes 
+### Final Notes 
 * The data store is not thread safe because I don't think it would offer any benefit at the moment.
