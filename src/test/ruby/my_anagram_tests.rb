@@ -22,6 +22,22 @@ class TestCases < Test::Unit::TestCase
     @client.delete('/words.json') rescue nil
   end
 
+  def test_comparing_words
+
+    words = ["read", "dear", "dare"]
+
+    @client.post('/words.json', nil, {"words" => words })
+
+    # expect it not to show up in results
+    res = @client.post('/anagrams/comparison.json', nil, {"words" => words }) rescue nil
+
+    assert_equal('200', res.code, "Unexpected response code")
+
+    body = JSON.parse(res.body)
+
+    assert_equal(true, body['match'])
+  end
+
   def test_comparing_words__valid_words__match
 
     res = @client.post('/anagrams/comparison.json', nil, {"words" => ["read", "dear", "dare"]}) rescue nil
