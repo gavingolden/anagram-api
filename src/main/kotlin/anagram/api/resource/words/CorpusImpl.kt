@@ -72,6 +72,18 @@ class CorpusImpl(val language: Language) : Corpus {
                 }
     }
 
+    override fun deleteAnagrams(word: String) {
+        val key = buildKey(word)
+        wordStore[key].let {
+            if (it != null && it.contains(word)) {
+                wordStore.remove(key)
+                logger.info("""Removed [$word] and its ${it.size - 1} anagrams""")
+            } else {
+                logger.debug("Did not remove [{}] because it is not in the corpus", word)
+            }
+        }
+    }
+
     /**
      * Determine if the word is valid
      * @return true if valid, else false

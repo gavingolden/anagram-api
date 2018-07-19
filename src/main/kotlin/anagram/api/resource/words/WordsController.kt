@@ -38,6 +38,12 @@ class WordsController(val wordsService: Corpus) {
         return AnagramsResponse(wordsService.findAnagrams(word, limit, excludeProperNouns))
     }
 
+    @DeleteMapping("/anagrams/{word}.json")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun anagrams(@PathVariable("word") word: String) {
+        wordsService.deleteAnagrams(word)
+    }
+
     data class ComparisonResponse(val match: Boolean)
 
     @PostMapping("/anagrams/comparison.json")

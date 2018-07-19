@@ -64,4 +64,21 @@ class TestCases < Test::Unit::TestCase
     assert_equal(false, body['match'])
   end
 
+  def test_deleting_word_and_its_anagrams
+
+    # delete the word
+    res = @client.delete('/anagrams/dear.json')
+
+    assert_equal('204', res.code, "Unexpected response code")
+
+    # expect none of its related anagrams to show up in the results
+    res = @client.get('/anagrams/read.json')
+
+    assert_equal('200', res.code, "Unexpected response code")
+
+    body = JSON.parse(res.body)
+
+    assert_equal(0, body['anagrams'].size)
+  end
+
 end

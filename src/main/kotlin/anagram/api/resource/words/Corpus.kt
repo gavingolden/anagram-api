@@ -37,4 +37,9 @@ interface Corpus {
      * @return true if all are anagrams, else false
      */
     fun compare(words: Collection<String>): Boolean
+
+    /**
+     * Delete the word and its anagrams if it exists
+     */
+    fun deleteAnagrams(word: String)
 }
