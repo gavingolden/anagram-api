@@ -14,7 +14,7 @@ service. Only valid English words can be added.
 * Clone this repository and run `./mvnw spring-boot:run`
 ##### Running the tests
 * A few additional tests were added in a separate ruby test file along with the provided tests
-* `find src/test/ruby -type f -name '*test*rb' | xargs ruby`
+* `find src/test/ruby -type f -name '*test*rb' -exec ruby {} \;`
 
 ### Backend Design
 The core optimization for identifying anagrams relies on the fact that anagrams are equal after being
