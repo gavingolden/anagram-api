@@ -1,9 +1,12 @@
 package anagram.api.resource.words
 
 import org.springframework.http.HttpStatus
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
+import javax.validation.constraints.Positive
 
 @RestController
+@Validated
 class WordsController(val wordsService: Corpus) {
 
     data class WordsRequest(val words: Collection<String>)
@@ -32,7 +35,7 @@ class WordsController(val wordsService: Corpus) {
     @GetMapping("/anagrams/{word}.json")
     @ResponseStatus(HttpStatus.OK)
     fun anagrams(@PathVariable("word") word: String,
-                 @RequestParam("limit") limit: Int?,
+                 @Positive @RequestParam("limit") limit: Int?,
                  @RequestParam("exclude_proper_nouns") excludeProperNouns: Boolean?)
             : AnagramsResponse {
         return AnagramsResponse(wordsService.findAnagrams(word, limit, excludeProperNouns))

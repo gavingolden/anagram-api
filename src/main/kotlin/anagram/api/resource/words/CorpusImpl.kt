@@ -6,6 +6,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import string.lazyStr
+import javax.validation.ValidationException
 
 @Service
 class CorpusImpl(val language: Language) : Corpus {
@@ -27,7 +28,7 @@ class CorpusImpl(val language: Language) : Corpus {
                 logger.info("""Adding ${words.size} words to the corpus""")
                 words.forEach(this::addWordToStore)
             } else {
-                throw IllegalArgumentException("""The words [${it.joinToString()}] are invalid""")
+                throw ValidationException("""The words [${it.joinToString()}] are invalid""")
             }
         }
     }
@@ -43,7 +44,7 @@ class CorpusImpl(val language: Language) : Corpus {
     }
 
     override fun findAnagrams(word: String, limit: Int?, excludeProperNouns: Boolean?): Collection<String> {
-        if (limit != null && limit < 0) throw IllegalArgumentException("limit must be positive")
+        if (limit != null && limit < 0) throw ValidationException("limit must be positive")
 
         return findBucket(word).orEmpty()
                 .minus(word)
