@@ -43,6 +43,9 @@ when a bucket is modified, not for each search API call.
 - [ ] Generate API documentation
 - [ ] Version API endpoints
 - [ ] Add metrics and transaction IDs to request logs with `MDC.Closeable`
+- [ ] Kotlin provides many immutable data structures, some of which are used here. This can lead to
+multiple unnecessary copies when conditionally filtering collections in stages. This can probably be
+improved by using `Stream`s or mutable collections.
 
 Some of the unimplemented endpoints would require us to efficiently track buckets by size. This could
 probably be done by using an iterable `TreeMultiMap` instead of a plain unsorted `Map`. The `TreeMultiMap`
@@ -82,3 +85,4 @@ wanted to give it a try
 
 ### Final Notes 
 * The data store is not thread safe because I don't think it would offer any benefit at the moment.
+  
