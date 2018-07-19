@@ -32,9 +32,10 @@ class WordsController(val wordsService: Corpus) {
     @GetMapping("/anagrams/{word}.json")
     @ResponseStatus(HttpStatus.OK)
     fun anagrams(@PathVariable("word") word: String,
-                 @RequestParam("limit") limit: Int?)
+                 @RequestParam("limit") limit: Int?,
+                 @RequestParam("exclude_proper_nouns") excludeProperNouns: Boolean?)
             : AnagramsResponse {
-        return AnagramsResponse(wordsService.findAnagrams(word, limit))
+        return AnagramsResponse(wordsService.findAnagrams(word, limit, excludeProperNouns))
     }
 
     data class ComparisonResponse(val match: Boolean)

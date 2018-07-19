@@ -27,9 +27,10 @@ interface Corpus {
      * in the corpus
      * @param word with which to search
      * @param limit max number of results
+     * @param excludeProperNouns flag to exclude proper nouns
      * @return anagrams, excluding the input word
      */
-    fun findAnagrams(word: String, limit: Int?): Collection<String>
+    fun findAnagrams(word: String, limit: Int?, excludeProperNouns: Boolean?): Collection<String>
 
     /**
      * Determine if words are anagrams of one another

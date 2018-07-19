@@ -42,17 +42,23 @@ class CorpusImpl(val language: Language) : Corpus {
         wordStore.clear()
     }
 
-    override fun findAnagrams(word: String, limit: Int?): Collection<String> {
+    override fun findAnagrams(word: String, limit: Int?, excludeProperNouns: Boolean?): Collection<String> {
         if (limit != null && limit < 0) throw IllegalArgumentException("limit must be positive")
 
-        val allAnagrams = findBucket(word).orEmpty()
+        return findBucket(word).orEmpty()
                 .minus(word)
-        logger.info("""Found ${allAnagrams.size} anagrams for [$word]""")
-
-        return if (limit != null) {
-            logger.info("""Returning $limit of ${allAnagrams.size} anagrams for [$word]""")
-            allAnagrams.take(limit)
-        } else allAnagrams
+                .also { logger.info("""Found ${it.size} anagrams for [$word]""") }
+                .let {
+                    if (excludeProperNouns == true) {
+                        logger.debug("Excluding proper nouns from results")
+                        it.filter { it[0].isLowerCase() }
+                    } else it
+                }.let {
+                    if (limit != null) {
+                        logger.debug("""Taking only $limit of ${it.size} anagrams for [$word]""")
+                        it.take(limit)
+                    } else it
+                }.also { logger.info("""Returning ${it.size} anagrams for [$word]""") }
     }
 
     override fun compare(words: Collection<String>): Boolean {
