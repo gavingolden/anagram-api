@@ -53,11 +53,11 @@ would be sorted by `bucket.size` so that the buckets can be easily iterated in o
 - [ ] Endpoint to return all anagram groups of size >= *x*
 - [ ] Endpoint that identifies words with the most anagrams 
 - [ ] Endpoint that returns a count of words in the corpus and min/max/median/average word length
-  - Average: This can be tracked and updated in `1` time by tracking the total corpus size and recomputing
+  - Average: This can be tracked and updated in constant time by tracking the total corpus size and recomputing
   when a word is added or removed. However, this would then require that these operations be `synchronized`
   to avoid corrupting the values due to race conditions.
   - Min/Max
-    - Adding words: These can be tracked in `1` time by comparing new words to the current min/max
+    - Adding words: These can be tracked in constant time by comparing new words to the current min/max
     - Removing words: This can't be easily recomputed with the current data structure if the mix/max word is removed.
     If this was a high volume API then we could create a second corpus data structure that keeps words ordered by size. 
 
