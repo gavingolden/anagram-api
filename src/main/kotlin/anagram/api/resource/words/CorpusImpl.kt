@@ -113,7 +113,14 @@ class CorpusImpl(val language: Language) : Corpus {
      */
     private fun findOrCreateBucket(word: String): MutableCollection<String> {
         return buildKey(word)
-                .let { wordStore.getOrPut(it, ::buildNewBucket) }
+                .let { key ->
+                    /* Ensures that a new bucket is not overwritten when
+                    simultaneous lookups occur for the same non-existent
+                    bucket */
+                    synchronized(key) {
+                        wordStore.getOrPut(key, ::buildNewBucket)
+                    }
+                }
     }
 
     /**

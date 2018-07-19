@@ -23,7 +23,11 @@ separate each word into its respective anagram bucket immediately when it is add
 sorting the word to find the bucket `key` for constant time lookups.
 
 Anagram results are returned in sorted order. Buckets are `SortedSet`s so that sorting only occurs
-when a bucket is modified, not for each search API call. 
+when a bucket is modified, not for each search API call.
+
+##### Thread Safety
+* The application is thread-safe. Access to the data store is only synchronized when creating new buckets
+to avoid overwriting a new bucket when simultaneous requests attempt to create a new one for the same `key` 
 
 ### API
 
@@ -82,7 +86,4 @@ wanted to give it a try
 * Spring Boot
 * Maven
 * Ruby (test)
-
-### Final Notes 
-* The data store is not thread safe because I don't think it would offer any benefit at the moment.
   
