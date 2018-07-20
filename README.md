@@ -50,6 +50,7 @@ to avoid overwriting a new bucket when simultaneous requests attempt to create a
 - [ ] Kotlin provides many immutable data structures, some of which are used here. This can lead to
 multiple unnecessary copies when conditionally filtering collections in stages. This can probably be
 improved by using `Stream`s or mutable collections.
+- [ ] Keep the dictionary resource file compressed in the repo to reduce size, then unzip it when loading the app
 
 Some of the unimplemented endpoints would require us to efficiently track buckets by size. This could
 probably be done by using an iterable `TreeMultiMap` instead of a plain unsorted `Map`. The `TreeMultiMap`
