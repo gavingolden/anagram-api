@@ -1,7 +1,8 @@
 package anagram.api.resource.words
 
-import anagram.api.extensions.lexicalSort
+import string.lexicalSort
 import anagram.api.resource.language.Language
+import collections.keepFirst
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -46,26 +47,27 @@ class CorpusImpl(val language: Language) : Corpus {
     override fun findAnagrams(word: String, limit: Int?, excludeProperNouns: Boolean?): Collection<String> {
         if (limit != null && limit < 0) throw ValidationException("limit must be positive")
 
-        return findBucket(word).orEmpty()
-                .minus(word)
-                .also { logger.info("""Found ${it.size} anagrams for [$word]""") }
-                .let {
+        return viewBucket(word)
+                .apply {
+                    remove(word)
+                    logger.info("""Found $size anagrams for [$word]""")
+
                     if (excludeProperNouns == true) {
                         logger.debug("Excluding proper nouns from results")
-                        it.filter { it[0].isLowerCase() }
-                    } else it
-                }.let {
-                    if (limit != null) {
-                        logger.debug("""Taking only $limit of ${it.size} anagrams for [$word]""")
-                        it.take(limit)
-                    } else it
-                }.also { logger.info("""Returning ${it.size} anagrams for [$word]""") }
+                        removeIf{ it[0].isLowerCase() }
+                    }
+                    limit?.let {
+                        logger.debug("Taking only {} of {} anagrams for [{}]", it, size, word)
+                        keepFirst(limit)
+                    }
+                    logger.info("""Returning $size anagrams for [$word]""")
+                }
     }
 
     override fun compare(words: Collection<String>): Boolean {
         return words.first()
-                .let(::findBucket)
-                ?.containsAll(words) ?: false
+                .let(::viewBucket)
+                .containsAll(words)
                 .also { isMatch ->
                     logger.debug("The words [{}] are{} mutual anagrams",
                             lazyStr { words.joinToString() },
@@ -135,6 +137,15 @@ class CorpusImpl(val language: Language) : Corpus {
                     if (bucket == null) logger.debug("Did not find bucket for [{}]", word)
                     else logger.debug("Found bucket of size {} for [{}]", bucket.size, word)
                 }
+    }
+
+    /**
+     * Get a mutable copy of the anagram bucket for the given
+     * word
+     */
+    private fun viewBucket(word: String): MutableCollection<String> {
+        return findBucket(word)
+                ?.toMutableSet() ?: mutableSetOf()
     }
 
     /**

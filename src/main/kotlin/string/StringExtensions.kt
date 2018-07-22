@@ -1,4 +1,4 @@
-package anagram.api.extensions
+package string
 
 /**
  * Lexically sort a string
